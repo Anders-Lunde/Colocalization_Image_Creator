@@ -1,0 +1,3 @@
+The input images and settings file used in "Examples of Usage 3" are ca 9 GB each, and can be downloaded as zip files from:
+
+https://www.dropbox.com/sh/8ah008sgkfffiwx/AAB1ihprbGq2xxRokqqbLra2a?dl=0

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>25.0.0</version>
+		<relativePath />
+	</parent>
+
+	<artifactId>Colocalization_Image_Creator</artifactId>
+	<version>1.0.0</version>
+
+	<name>Colocalization Image Creator</name>
+	<inceptionYear>2019</inceptionYear>
+	<licenses>
+		<license>
+			<name>GNU General Public License v3.0</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>Anders-Lunde</id>
+			<name>Anders Lunde</name>
+			<url>https://www.med.uio.no/imb/english/</url>
+			<roles>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Arnab Sarkar</name>
+			<url>http://na.na</url>
+			<roles><role>developer</role></roles>
+		</contributor>
+		<contributor>
+			<name>Andrey Rusev</name>
+			<url>https://www.upwork.com/freelancers/~01e12cffe5b52adc1a</url>
+			<roles><role>developer</role></roles>
+		</contributor>
+	</contributors>
+	
+		<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>http://forum.imagej.net/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/imagej/example-legacy-plugin</connection>
+		<developerConnection>scm:git:git@github.com:imagej/example-legacy-plugin</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/imagej/example-legacy-plugin</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/imagej/example-legacy-plugin/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+
+	<properties>
+		<license.licenseName>GPLv3</license.licenseName>
+		<license.copyrightOwners>Anders Lunde/Joel Glover/Univeristy of Oslo</license.copyrightOwners>
+	</properties>
+
+	<dependencies>
+		<dependency>
+		<!--  ImageJ -->
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+			<!--  provided tag avoids building the jar with this dependency
+			when using the maven-assembly-plugin  -->
+			 <scope>provided</scope>
+			<!--for testing different versions:  
+			<version>1.52n</version>  
+			-->
+		</dependency>
+		
+	<dependency>
+	  <groupId>org.codehaus.jackson</groupId>
+	  <artifactId>jackson-mapper-asl</artifactId>
+	  <version>1.9.13</version>
+	</dependency>
+	
+	<!-- 	
+	<dependency>
+	  <groupId>net.sf.jxls</groupId>
+	  <artifactId>jxls</artifactId>
+	  <version>1.0.6</version>
+	  <type>pom</type>
+	</dependency>
+	-->
+	
+	<!-- 	
+	<dependency>
+		<groupId>net.sourceforge.jexcelapi</groupId>
+		<artifactId>jxl</artifactId>
+		<version>2.6.12</version>
+	</dependency>
+	-->
+		
+	<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+	<dependency>
+		<groupId>com.googlecode.json-simple</groupId>
+		<artifactId>json-simple</artifactId>
+		<version>1.1.1</version>
+	</dependency>
+		
+	
+	<!-- 
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.7.25</version>
+</dependency>
+-->
+
+	</dependencies>
+	
+	
+	<url>http://na.na</url>
+	<organization>
+		<name>uio</name>
+		<url>http://na.na</url>
+	</organization>
+	<description>Colocalization_Image_Creator</description>
+	
+	<!-- This part makes mvn build an additional jar that includes dependencies.
+	This is neccessary to avoid having users to include the jackson-mapper-asl jar in the ImageJ jars folder -->
+	 <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+	
+</project>
