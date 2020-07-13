@@ -1,4 +1,4 @@
-# Colocalization Object Counter
+# Colocalization Image Creator
 ## An ImageJ plugin for cell-by-cell semi-automatic object based colocalization analysis
 
 In this repository you can find:
