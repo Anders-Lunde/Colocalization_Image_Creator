@@ -16,7 +16,7 @@
 	<version>1.0.0</version>
 
 	<name>Colocalization Image Creator</name>
-	<inceptionYear>2019</inceptionYear>
+	<inceptionYear>2020</inceptionYear>
 	<licenses>
 		<license>
 			<name>GNU General Public License v3.0</name>
@@ -144,6 +144,7 @@
 	This is neccessary to avoid having users to include the jackson-mapper-asl jar in the ImageJ jars folder -->
 	 <build>
     <plugins>
+    
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -155,12 +156,20 @@
           </execution>
         </executions>
         <configuration>
+        <outputDirectory>./jar-file</outputDirectory>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
+        
           </descriptorRefs>
         </configuration>
       </plugin>
+    
+
+
     </plugins>
   </build>
+	
+	
+	
 	
 </project>
