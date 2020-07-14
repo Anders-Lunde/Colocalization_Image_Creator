@@ -1,4 +1,4 @@
-# Colocalization Object Counter
+# Colocalization Image Creator
 ## An ImageJ plugin for cell-by-cell semi-automatic object based colocalization analysis
 ![alt text](https://github.com/Anders-Lunde/Colocalization_Object_Counter/blob/master/Plugin%20overview.png "Plugin overview")
 
@@ -8,10 +8,7 @@
 In this repository you can find:
 1. the plugin .jar file
 2. the plugin source code
-3. *the Microsoft Excel macro file (in folder: "Excel data organizer macro file")
-4. *the Matlab script. (in folder: "Matlab 3d visualization files")
 
-*NB! The items 3. and 4. above are automatically installed when using the ImageJ plugin. There is no need to download them individually.
 
 ## Installing the plugin:
 ### Option 1 - Recommended!: 
