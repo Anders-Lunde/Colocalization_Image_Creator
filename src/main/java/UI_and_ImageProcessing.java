@@ -76,6 +76,7 @@ import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
 import ij.plugin.ImageCalculator;
 import ij.plugin.ZProjector;
+import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import wizard.app.Wizard;
@@ -3129,6 +3130,9 @@ public class UI_and_ImageProcessing {
 		}
 		impSingleThresholdChannel.close();
 		
+		System.out.println(impOneThresholdElement.getBitDepth());
+		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
+		
 		//Potential 3d-filter step (depends on when user wants it to be done)
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
 		if (hashMap_AllInfo.get(Integer.toString(i + 1)).containsKey("3dRmvEnable")) { //Older versions doesnt have 3d filter info in hashMap
@@ -3137,6 +3141,8 @@ public class UI_and_ImageProcessing {
 			}
 		}
 		
+		System.out.println(impOneThresholdElement.getBitDepth());
+		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 
 		// Apply macros/filter
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3159,6 +3165,8 @@ public class UI_and_ImageProcessing {
 			for (int ii = 1; ii <= impOneThresholdElement.getNSlices(); ii++)
 				applyMacroToSliceInImp(impOneThresholdElement, macroString, ii);
 		
+		System.out.println(impOneThresholdElement.getBitDepth());
+		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 		
 		//Potential 3d-filter step (depends on when user wants it to be done)
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3167,6 +3175,8 @@ public class UI_and_ImageProcessing {
 				impOneThresholdElement = apply3dFilter(impOneThresholdElement, i);
 			}
 		}
+		System.out.println(impOneThresholdElement.getBitDepth());
+		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 		
 		// Remove any particles below size set by user, if enabled:
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3201,6 +3211,11 @@ public class UI_and_ImageProcessing {
 					impOneThresholdElement_mask); // Deleting small particles
 			impOneThresholdElement_mask.close();
 		}
+
+
+		System.out.println(impOneThresholdElement.getBitDepth());
+		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
+		
 		
 		//Potential 3d-filter step (depends on when user wants it to be done)
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3209,6 +3224,9 @@ public class UI_and_ImageProcessing {
 				impOneThresholdElement = apply3dFilter(impOneThresholdElement, i);
 			}
 		}
+		
+		System.out.println(impOneThresholdElement.getBitDepth());
+		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 		
 
 		// Do outline conversion
@@ -3239,7 +3257,7 @@ public class UI_and_ImageProcessing {
 			String max = hashMap_AllInfo.get(Integer.toString(i + 1)).get("3dRmvMax");
 			boolean exclude = hashMap_AllInfo.get(Integer.toString(i + 1)).get("3dRmvExclude").equals("1") ? true : false;
 			
-			String cmd = "threshold=128 slice=1 min.=" + min + " max.=" + max; //threshold can be anywhere from 2 to 254. Image is already binary. Slice is for display and not important.
+			String cmd = "threshold=1 slice=1 min.=" + min + " max.=" + max; //threshold can be anywhere from 2 to 254. Image is already binary. Slice is for display and not important.
 			if (exclude) {
 				cmd = cmd + " exclude_objects_on_edges objects";
 			} else {
@@ -3247,10 +3265,20 @@ public class UI_and_ImageProcessing {
 			}
 			IJ.run("3D OC Options", "  dots_size=5 font_size=10 redirect_to=none");
 			IJ.run(inputImp, "3D Objects Counter", cmd); //Creates filtered image.
+			
+			System.out.println(impOneThresholdElement.getBitDepth());
+			IJ.log(" in func: " + String.valueOf(impOneThresholdElement.getBitDepth()));
+			
+			
 			inputImp.changes = false;
 			String originalTitle = inputImp.getTitle();
 			inputImp.changes = false;
 			ImagePlus output = WindowManager.getImage("Objects map of " + originalTitle);
+			
+			output.show(); //TODO:
+			
+			ImageConverter.setDoScaling(true); //TODO:
+			IJ.run(output, "8-bit", ""); //TODO:
 			
 			//Set all non-0 pixels to 255
 			for (int n=1; n<=output.getNSlices(); n++) {
