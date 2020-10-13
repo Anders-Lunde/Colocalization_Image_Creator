@@ -34,6 +34,8 @@ Currently in review in [Scientific Reports] (https://www.nature.com/srep/) (Lund
 ### The Colocalization Image Creator plugin allows the creation of custom binary or grayscale visualizations based on raw data of input multichannel images, into a format that is more suitable for semi-automatic OBCA. The output visualizations can be based on a single input channel, or represent signal overlap across input channels, thus providing the opportunity to assess which markers any labeled cell or cell compartment contains. The visualizations and the markers they represent are assigned in the form of image elements, which are created during plugin operation. An important feature is that the flexibility of the plugin facilitates visualization of cellular marker colocalization in various ways, accommodating different experimental frameworks.
 
 ![alt text](https://github.com/Anders-Lunde/Colocalization_Image_Creator/blob/master/Example.jpg "Colocalization Image Creator example")
+## NB! Only B and C above is part of the plugin output. D was in this case created manually to demonstrate features of the plugin output.
+
 
 ## Introduction:
 
