@@ -95,16 +95,18 @@ public class AdvancedOptionsBinary extends JDialog {
 		objects3dMaximum = new JTextField();
 		objects3dMaximum.addKeyListener(new DoubleInputTextFieldListener(objects3dMaximum));
 		objects3dMaximum.setColumns(8);
-		objects3dMaximum.setText("999999999999999999999999");
+		objects3dMaximum.setText("2147483647");
 		
-		Label objects3d_header = new Label("Filter away 3D objects. Requires the 3D Objects Counter plugin.");
+		Label objects3d_header = new Label("Filter away 3D object (hard-coded 3D Objects Counter plugin method).");
 		objects3d_header.setFont(Constants.SMALL_FONT_BOLD);
-		Label objects3dMinimum_label = new Label("Remove 3d objects smaller than (pixels):");
+		Label objects3dMinimum_label = new Label("Remove 3d objects smaller than (pixels/voxels):");
 		objects3dMinimum_label.setFont(Constants.SMALL_FONT);
-		Label objects3dMaximum_label = new Label("Remove 3d objects bigger than (pixels):");
+		Label objects3dMaximum_label = new Label("Remove 3d objects bigger than (max possible size = 2147483647 pixels/voxels):");
 		objects3dMaximum_label.setFont(Constants.SMALL_FONT);
+		/*
 		Label objects3d_conditionalLabel = new Label();
 		objects3d_conditionalLabel.setFont(Constants.SMALL_FONT_BOLD);
+		
 		if (!ij.Menus.getCommands().toString().toLowerCase().contains("3d objects counter")) {
 			objects3dEnable.setEnabled(false);
 			objects3dEnable.setText("Enable 3D filter - ERROR: requires '3D Objects Counter plugin'");
@@ -112,6 +114,7 @@ public class AdvancedOptionsBinary extends JDialog {
 		} else {
 			objects3d_conditionalLabel.setText("The '3D Objects Counter' plugin is installed. This function can be used.");
 		}
+		*/
 		
 		Label objects3dComboboxLabel = new Label("Choose when to perform 3d objects removal:");
 		objects3dComboboxLabel.setFont(Constants.SMALL_FONT);
@@ -121,7 +124,7 @@ public class AdvancedOptionsBinary extends JDialog {
 		objects3dOrderCombobox.setSelectedIndex(1);
 
 		objects3dPanel.add(objects3d_header);
-		objects3dPanel.add(objects3d_conditionalLabel);
+		//objects3dPanel.add(objects3d_conditionalLabel);
 		objects3dPanel.add(objects3dMinimum_label);
 		objects3dPanel.add(objects3dMinimum);
 		objects3dPanel.add(objects3dMaximum_label);

@@ -19,17 +19,14 @@ public class Colocalization_Image_Creator implements PlugIn {
 		//Having more than one plugin instance is problematic. Check for this
 		plugin_instance_counter.addElement("incrementor");
 		if (plugin_instance_counter.size() > 1) {
-			IJ.error("ERROR", "Another ColocalizationImageCreator is running. Open old one, or save progress and restart ImageJ.");
+			IJ.error("ERROR", "Another ColocalizationImageCreator is running. This can lead to errors. Open the active window, or save progress and restart ImageJ.");
 			return;
 		}
 		
-		//Open debug image: //TODO: Disable
+		//Open debug image: 
 		//File resourcesDirectory = new File("src/main/resources/");
 		//ImagePlus debugimage = IJ.openImage("\\\\kant\\uv-isp-adm-u1\\andelu\\pc\\Pictures\\0 Stack 2.tif");
-		//ImagePlus debugimage = IJ.openImage("\\\\kant\\uv-isp-adm-u1\\andelu\\pc\\Pictures\\0 Stack 2.tif");
 		//debugimage.show();
-
-
 		
 		//Force one image to be open before plugin launch
 		int[] imageIDs = WindowManager.getIDList();

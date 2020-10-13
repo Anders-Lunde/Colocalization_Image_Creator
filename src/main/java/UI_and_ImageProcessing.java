@@ -35,6 +35,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -45,7 +46,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -53,6 +53,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.json.simple.JSONObject;
 
+import Utilities.Counter3D;
 import batchprocessing.BatchProcessingConstants;
 import batchprocessing.BatchProcessingDialog;
 import batchprocessing.CellItem;
@@ -65,8 +66,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
-import ij.gui.WaitForUserDialog;
-import ij.io.DirectoryChooser;
 import ij.io.FileSaver;
 import ij.io.OpenDialog;
 import ij.io.Opener;
@@ -211,13 +210,6 @@ public class UI_and_ImageProcessing {
 		IJ.run("Misc...", "divide=Infinity hide run reverse");
 		IJ.run(impInput, "Options...", "iterations=1 count=1 black");
 		IJ.run("Colors...", "foreground=white background=black selection=yellow");
-
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
 
 		addEventListenersForWizard();
 		
@@ -1960,11 +1952,31 @@ public class UI_and_ImageProcessing {
 		batchProcessingDialog.inputFolderButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				/*
+				 * Leads to changed lookandfeel:
 				DirectoryChooser dirChooser = new DirectoryChooser(
 						BatchProcessingConstants.INPUT_FOLDER_FILE_CHOOSER_TITLE);
 				DirectoryChooser.setDefaultDirectory(OpenDialog.getLastDirectory());
 				String inputDir = dirChooser.getDirectory();
+				*/
+				
+				JFileChooser chooser = new JFileChooser();
+                chooser.setDialogTitle("chose input folder");
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                String defaultDir = OpenDialog.getLastDirectory();
+                if (defaultDir!=null) {
+                    File f = new File(defaultDir);
+                    chooser.setSelectedFile(f);
+                }
+                chooser.setApproveButtonText("Select");
+                String inputDir = null;
+                if (chooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+                    inputDir = file.getAbsolutePath();
+                    OpenDialog.setDefaultDirectory(inputDir);
+                }
+				
+
 				if (inputDir != null && !"".equals(inputDir)) {
 
 					batchProcessingDialog.inputFolderTextField.setText(inputDir);
@@ -1986,11 +1998,31 @@ public class UI_and_ImageProcessing {
 		batchProcessingDialog.outputFolderButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				/*
+				 * Leads to changed lookandfeel:
 				DirectoryChooser dirChooser = new DirectoryChooser(
 						BatchProcessingConstants.OUTPUT_FOLDER_FILE_CHOOSER_TITLE);
 				DirectoryChooser.setDefaultDirectory(OpenDialog.getLastDirectory());
 				String outputDir = dirChooser.getDirectory();
+				*/
+				
+				JFileChooser chooser = new JFileChooser();
+                chooser.setDialogTitle("chose output folder");
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                String defaultDir = OpenDialog.getLastDirectory();
+                if (defaultDir!=null) {
+                    File f = new File(defaultDir);
+                    chooser.setSelectedFile(f);
+                }
+                chooser.setApproveButtonText("Select");
+                String outputDir = null;
+                if (chooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+                    outputDir = file.getAbsolutePath();
+                    OpenDialog.setDefaultDirectory(outputDir);
+                }
+				
+				
 				batchProcessingDialog.outputFolderTextField.setText(outputDir);
 			}
 		});
@@ -2339,7 +2371,7 @@ public class UI_and_ImageProcessing {
 	// OTHER METHODS
 	//////////////////////////////////////////////////
 	//////////////////////////////////////////////////
-
+	
 	private void setTempLutFromHashmap() {
 		// Set color as was selected in wizard during adjustment
 		// This is to get visually the same output as is seen during adjusment
@@ -2804,13 +2836,15 @@ public class UI_and_ImageProcessing {
 				impZProjection.close();
 			}
 			
-			//3D filter doesnt work if this imp is closed to soon! Probably some processor object in the imp is used for the main image. 
+			//3D filter doesnt work if this imp is closed too soon! Probably some processor object in the imp is used for the main image. 
 			//Thats why we close them here instead. If fixed could improve memory consumption.
+			/* NOW FIXED. CAN REMOVE BELOW.
 			for (String title : WindowManager.getImageTitles()) { 			
 				if (title.contains("Objects map of")) {
 					WindowManager.getImage(title).close();
 				}
 			}
+			*/
 				
 		
 		}
@@ -3130,8 +3164,6 @@ public class UI_and_ImageProcessing {
 		}
 		impSingleThresholdChannel.close();
 		
-		System.out.println(impOneThresholdElement.getBitDepth());
-		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 		
 		//Potential 3d-filter step (depends on when user wants it to be done)
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3140,10 +3172,7 @@ public class UI_and_ImageProcessing {
 				impOneThresholdElement = apply3dFilter(impOneThresholdElement, i);
 			}
 		}
-		
-		System.out.println(impOneThresholdElement.getBitDepth());
-		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
-
+	
 		// Apply macros/filter
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
 		boolean calledFromZ = calledFrom.equals("zProjection") ? true : false;
@@ -3165,8 +3194,6 @@ public class UI_and_ImageProcessing {
 			for (int ii = 1; ii <= impOneThresholdElement.getNSlices(); ii++)
 				applyMacroToSliceInImp(impOneThresholdElement, macroString, ii);
 		
-		System.out.println(impOneThresholdElement.getBitDepth());
-		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 		
 		//Potential 3d-filter step (depends on when user wants it to be done)
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3175,8 +3202,6 @@ public class UI_and_ImageProcessing {
 				impOneThresholdElement = apply3dFilter(impOneThresholdElement, i);
 			}
 		}
-		System.out.println(impOneThresholdElement.getBitDepth());
-		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 		
 		// Remove any particles below size set by user, if enabled:
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3213,9 +3238,6 @@ public class UI_and_ImageProcessing {
 		}
 
 
-		System.out.println(impOneThresholdElement.getBitDepth());
-		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
-		
 		
 		//Potential 3d-filter step (depends on when user wants it to be done)
 		impOneThresholdElement.setCalibration(impInput.getCalibration());
@@ -3224,9 +3246,6 @@ public class UI_and_ImageProcessing {
 				impOneThresholdElement = apply3dFilter(impOneThresholdElement, i);
 			}
 		}
-		
-		System.out.println(impOneThresholdElement.getBitDepth());
-		IJ.log(String.valueOf(impOneThresholdElement.getBitDepth()));
 		
 
 		// Do outline conversion
@@ -3249,40 +3268,67 @@ public class UI_and_ImageProcessing {
 		}
 		boolean do3dFilter = hashMap_AllInfo.get(Integer.toString(i + 1)).get("3dRmvEnable").equals("1") ? true : false;
 		if (do3dFilter) {
+			/*
 			if (!ij.Menus.getCommands().toString().toLowerCase().contains("3d objects counter")) {
 				IJ.log("ERROR! Element number " + Integer.toString(i+1) + " contains has enabled a 3D-filter. \nThis requires the'3D Objects Counter plugin'\n Please install the plugin, or use the FIJI version of ImageJ.\n NB! The element was prossesed without the 3D filter.");
 				return inputImp;
 			}
+			*/
+			
 			String min = hashMap_AllInfo.get(Integer.toString(i + 1)).get("3dRmvMin");
 			String max = hashMap_AllInfo.get(Integer.toString(i + 1)).get("3dRmvMax");
 			boolean exclude = hashMap_AllInfo.get(Integer.toString(i + 1)).get("3dRmvExclude").equals("1") ? true : false;
 			
+			/*
 			String cmd = "threshold=1 slice=1 min.=" + min + " max.=" + max; //threshold can be anywhere from 2 to 254. Image is already binary. Slice is for display and not important.
 			if (exclude) {
 				cmd = cmd + " exclude_objects_on_edges objects";
 			} else {
 				cmd = cmd + " objects"; //Show binary output with preserved objects (filtered image).
 			}
+			
 			IJ.run("3D OC Options", "  dots_size=5 font_size=10 redirect_to=none");
 			IJ.run(inputImp, "3D Objects Counter", cmd); //Creates filtered image.
+			*/
 			
-			System.out.println(impOneThresholdElement.getBitDepth());
-			IJ.log(" in func: " + String.valueOf(impOneThresholdElement.getBitDepth()));
+		    /**
+		     * Creates a new instance of Counter3D.
+		     *
+		     * @param img specifies the image to convert into an Counter3D.
+		     * @param thr specifies the threshold value (should be an Integer).
+		     * @param min specifies the MIN size threshold to be used (should be an Integer).
+		     * @param max specifies the MAX size threshold to be used (should be an Integer).
+		     * @param exclude specifies if the objects on the edges should be excluded (should be a boolean).
+		     * @param redirect specifies if intensities measurements should be redirected to another image defined within the options window (should be a boolean).
+		     */
+			//inputImp.show();
+	    	IJ.log("");
+	    	IJ.log("Detecting 3D objects for image: " + impInput.getTitle());
+	        
+			Counter3D OC=new Counter3D(inputImp, 2, Integer.parseInt(min), Integer.parseInt(max), exclude, false); //imp, thr, minSize, maxSize, excludeOnEdges, redirect
+			inputImp = OC.getObjMap();
+			//inputImp.show();			
+			
+			System.out.println(impOneThresholdElement.getBitDepth()); //For debug
+			//IJ.log(" in func: " + String.valueOf(impOneThresholdElement.getBitDepth())); //For debug
+		
 			
 			
 			inputImp.changes = false;
-			String originalTitle = inputImp.getTitle();
+			//String originalTitle = inputImp.getTitle();
 			inputImp.changes = false;
-			ImagePlus output = WindowManager.getImage("Objects map of " + originalTitle);
+			//ImagePlus output = WindowManager.getImage("Objects map of " + originalTitle);
 			
-			output.show(); //TODO:
+			//output.show();
 			
-			ImageConverter.setDoScaling(true); //TODO:
-			IJ.run(output, "8-bit", ""); //TODO:
+			ImageConverter.setDoScaling(true);
+			//inputImp.show();
+			IJ.run(inputImp, "8-bit", ""); 
+			//inputImp.show();
 			
 			//Set all non-0 pixels to 255
-			for (int n=1; n<=output.getNSlices(); n++) {
-				ImageProcessor ip = output.getImageStack().getProcessor(n);
+			for (int n=1; n<=inputImp.getNSlices(); n++) {
+				ImageProcessor ip = inputImp.getImageStack().getProcessor(n);
 				int xmin = 0, ymin = 0, xmax = ip.getWidth(), ymax = ip.getHeight();
 				double v;
 				for (int y = ymin; y < ymax; y++) {
@@ -3290,10 +3336,11 @@ public class UI_and_ImageProcessing {
 						if (ip.getPixel(x, y) > 0) {
 							ip.putPixel(x, y, 255);
 				}}}
-				output.getImageStack().setProcessor(ip,  n);
+				inputImp.getImageStack().setProcessor(ip,  n);
 			}
+			//inputImp.show();
 			//output.show();
-			inputImp.setStack(output.getStack());
+			////inputImp.setStack(output.getStack());
 			inputImp.changes = false;
 			//output.changes = false;
 			//output.close(); //DO NOT CLOSE! Somehow this method doesnt work when output is closed. They are closed at end of processing instead.
